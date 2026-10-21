@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web Share Code - Pro</title>
+  <title>Lua Source Share</title>
   
-  <!-- Thư viện CodeMirror và các mode ngôn ngữ -->
+  <!-- CodeMirror -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
@@ -18,275 +18,333 @@
 
   <style>
     :root {
-      --bg: #121212; --panel: #1e1e1e; --border: #333; --text: #e0e0e0;
-      --text-muted: #888; --btn-blue: #3b5998; --btn-blue-hover: #4a6cb5;
-      --btn-green: #27ae60; --btn-green-hover: #2ecc71;
+      --bg: #0f0f11; --panel: #18181b; --border: #27272a; --text: #f4f4f5;
+      --muted: #a1a1aa; --primary: #3b82f6; --primary-hover: #2563eb;
+      --danger: #ef4444;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
     
-    header { display: flex; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--border); align-items: center; }
-    .header-left, .header-right { display: flex; gap: 16px; align-items: center; color: var(--text-muted); }
-    header svg { width: 20px; height: 20px; fill: currentColor; cursor: pointer; }
+    /* Header */
+    header { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; border-bottom: 1px solid var(--border); background: var(--bg); }
+    .logo { font-weight: 700; font-size: 18px; letter-spacing: -0.5px; }
     
-    .banner-container { padding: 12px 16px; }
-    .banner { width: 100%; height: 100px; border-radius: 8px; background: url('https://i.ibb.co/3s6y6v1/doraemon.jpg') center/cover; position: relative; overflow: hidden; }
-    .banner-text { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.6); color: white; padding: 2px 6px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+    /* Banner */
+    .banner-container { padding: 16px 24px 0; max-width: 1000px; margin: 0 auto; width: 100%; }
+    .banner { width: 100%; height: 140px; border-radius: 8px; background: url('https://www.image2url.com/r2/default/gifs/1792619935669-6803e9fd-f753-4013-8516-5e35b55ddcc0.gif') center/cover; border: 1px solid var(--border); }
 
-    .tabs { display: flex; gap: 8px; padding: 0 16px 12px 16px; }
-    .tab { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px; border: 1px solid var(--border); border-radius: 8px; background: transparent; color: var(--text); font-size: 14px; text-decoration: none; cursor: pointer; }
-    .tab svg { width: 16px; height: 16px; fill: currentColor; }
+    /* Tabs */
+    .nav-tabs { display: flex; gap: 24px; padding: 0 24px; border-bottom: 1px solid var(--border); background: var(--bg); max-width: 1000px; margin: 16px auto 0; width: 100%; }
+    .nav-item { padding: 12px 0; color: var(--muted); font-size: 14px; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; }
+    .nav-item:hover { color: var(--text); }
+    .nav-item.active { color: var(--text); border-bottom-color: var(--primary); }
 
-    main { padding: 0 16px 16px 16px; flex: 1; display: flex; flex-direction: column; }
-    .input-group { display: flex; gap: 8px; margin-bottom: 12px; }
-    .filename-input, .password-input { padding: 14px 16px; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 16px; outline: none; }
-    .filename-input { flex: 1; }
-    .password-input { width: 140px; }
+    /* Main Content */
+    main { flex: 1; padding: 24px; display: flex; flex-direction: column; max-width: 1000px; margin: 0 auto; width: 100%; }
     
-    .editor-container { flex: 1; min-height: 300px; margin-bottom: 16px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
-    .CodeMirror { height: 100% !important; font-family: monospace !important; font-size: 14px !important; }
+    /* Form */
+    .input-row { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+    input[type="text"], input[type="password"], select {
+      background: var(--panel); border: 1px solid var(--border); color: var(--text);
+      padding: 10px 14px; border-radius: 6px; font-size: 14px; outline: none; transition: border 0.2s;
+    }
+    input:focus, select:focus { border-color: var(--primary); }
+    .input-file { flex: 1; min-width: 200px; }
+    .input-pw { width: 160px; }
+    .input-exp { width: 130px; }
 
-    .action-row { display: flex; gap: 8px; }
-    .btn { padding: 14px; border: none; border-radius: 8px; font-size: 16px; font-weight: 500; cursor: pointer; color: white; transition: 0.2s; }
-    .submit-btn { flex: 1; background: var(--btn-blue); }
-    .submit-btn:hover { background: var(--btn-blue-hover); }
-    .update-btn { background: #e67e22; padding: 14px 20px; }
-    .update-btn:hover { background: #d35400; }
+    /* Editor */
+    .editor-wrapper { flex: 1; min-height: 350px; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin-bottom: 16px; display: flex; flex-direction: column; }
+    .CodeMirror { height: 100% !important; font-family: 'Fira Code', 'Courier New', monospace !important; font-size: 14px !important; }
 
-    footer { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-top: 1px solid var(--border); font-size: 14px; color: var(--text); }
-    .footer-links { display: flex; gap: 16px; align-items: center; }
-    .footer-links a { color: var(--text); text-decoration: none; }
-    .footer-icons { display: flex; gap: 16px; align-items: center; }
-    .footer-icons svg { width: 20px; height: 20px; fill: currentColor; }
-    .dot { width: 12px; height: 12px; border-radius: 50%; background: #e74c3c; }
+    /* Options & Buttons */
+    .options { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .checkbox-group { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); cursor: pointer; }
+    
+    .btn { padding: 10px 20px; border-radius: 6px; border: none; font-weight: 500; font-size: 14px; cursor: pointer; color: white; transition: background 0.2s; }
+    .btn-primary { background: var(--primary); }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-danger { background: var(--danger); }
+    .btn-danger:hover { opacity: 0.8; }
 
-    /* Modal */
-    #modal, #update-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; }
-    .modal-content { background: var(--panel); padding: 20px; border-radius: 12px; width: 90%; max-width: 400px; border: 1px solid var(--border); }
-    .modal-content h3 { margin-bottom: 12px; color: #fff; }
-    .modal-content input { width: 100%; padding: 10px; background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 6px; margin-bottom: 16px; outline: none; }
-    .modal-content button { width: 100%; padding: 10px; background: var(--btn-blue); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; }
+    /* Lists */
+    .list-container { display: flex; flex-direction: column; gap: 12px; }
+    .list-item { background: var(--panel); border: 1px solid var(--border); border-radius: 6px; padding: 16px; display: flex; justify-content: space-between; align-items: center; }
+    .item-info h4 { font-size: 15px; margin-bottom: 4px; color: var(--text); }
+    .item-info p { font-size: 13px; color: var(--muted); }
+    .item-actions { display: flex; gap: 8px; }
+    .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 4px; border: none; cursor: pointer; color: white; text-decoration: none; display: inline-block; }
+    
+    /* Modal & Toast */
+    #modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 50; align-items: center; justify-content: center; }
+    .modal-content { background: var(--panel); border: 1px solid var(--border); padding: 24px; border-radius: 8px; width: 100%; max-width: 450px; }
+    .modal-content h3 { margin-bottom: 16px; font-size: 18px; }
+    .modal-content input { width: 100%; margin-bottom: 16px; }
+    #toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--panel); border: 1px solid var(--border); color: var(--text); padding: 12px 24px; border-radius: 6px; font-size: 14px; opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 100; }
+    #toast.show { opacity: 1; }
+    
+    /* Footer */
+    footer { padding: 24px; text-align: center; border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; margin-top: auto; }
 
-    /* Toast */
-    #toast { visibility: hidden; min-width: 250px; background-color: #333; color: #fff; text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 2000; left: 50%; bottom: 30px; transform: translateX(-50%); font-size: 14px; opacity: 0; transition: opacity 0.3s, bottom 0.3s; }
-    #toast.show { visibility: visible; opacity: 1; bottom: 50px; }
-
-    /* CSS DÀNH RIÊNG CHO CHẾ ĐỘ RAW TEXT */
-    body.raw-mode { background: #fff !important; color: #000 !important; display: block !important; padding: 10px !important; font-family: monospace !important; white-space: pre-wrap !important; word-wrap: break-word !important; }
+    /* RAW Mode */
+    body.raw-mode { background: #ffffff !important; color: #000000 !important; padding: 16px !important; font-family: monospace !important; white-space: pre-wrap !important; word-break: break-all !important; display: block !important; }
   </style>
 </head>
 <body>
 
-  <!-- GIAO DIỆN UPLOAD -->
-  <div id="upload-mode" style="display:flex; flex-direction:column; min-height:100vh;">
-    <header>
-      <div class="header-left"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></div>
-      <div class="header-right">
-        <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-        <span style="border: 1px solid var(--border); padding: 2px 8px; border-radius: 12px; font-size: 12px;">Pro</span>
-      </div>
-    </header>
+  <header>
+    <div class="logo">Lua Source Share</div>
+  </header>
 
-    <div class="banner-container">
-      <div class="banner"><div class="banner-text">Share Code</div></div>
-    </div>
-
-    <div class="tabs">
-      <a href="#" class="tab"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg> trang chủ</a>
-      <a href="#" class="tab" onclick="alert('Tính năng đang phát triển!')"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg> khám phá</a>
-    </div>
-
-    <main>
-      <div class="input-group">
-        <input type="text" id="filename" class="filename-input" value="baomat.lua" placeholder="Tên file (kèm đuôi, vd: baomat.lua)" />
-        <input type="password" id="password" class="password-input" placeholder="Mật khẩu (tuỳ chọn)" />
-      </div>
-      
-      <div class="editor-container">
-        <textarea id="code"></textarea>
-      </div>
-
-      <div class="action-row">
-        <button class="btn submit-btn" id="submitBtn">Gửi & Tạo Link</button>
-        <button class="btn update-btn" id="updateBtn">Cập nhật ID cũ</button>
-      </div>
-    </main>
-
-    <footer>
-      <div class="footer-links">
-        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg>
-        <a href="#">discord</a><a href="#">imprint</a><a href="#">privacy</a>
-      </div>
-      <div class="footer-icons">
-        <svg viewBox="0 0 24 24"><path d="M12 2L1 21h22L12 2zm0 3.83L19.5 19h-15L12 5.83zM11 16h2v2h-2v-2zm0-6h2v4h-2v-4z"/></svg>
-        <div class="dot"></div>
-      </div>
-    </footer>
+  <!-- Khôi phục Banner -->
+  <div class="banner-container">
+    <div class="banner"></div>
   </div>
 
-  <!-- MODAL NHẬP ID ĐỂ CẬP NHẬT -->
-  <div id="update-modal">
-    <div class="modal-content">
-      <h3>🔄 Cập nhật Code</h3>
-      <p style="font-size: 12px; color: #888; margin-bottom: 8px;">Nhập ID (đuôi link raw) và mật khẩu cũ:</p>
-      <input type="text" id="update-id" placeholder="Ví dụ: 123456789">
-      <input type="password" id="update-pw" placeholder="Mật khẩu cũ (nếu có)">
-      <button onclick="doUpdate()">Xác nhận cập nhật</button>
-      <button style="margin-top: 8px; background: transparent; border: 1px solid var(--border);" onclick="document.getElementById('update-modal').style.display='none'">Hủy</button>
-    </div>
+  <div class="nav-tabs" id="nav-tabs">
+    <div class="nav-item active" onclick="switchTab('upload')">Đăng tải</div>
+    <div class="nav-item" onclick="switchTab('explore')">Khám phá</div>
+    <div class="nav-item" onclick="switchTab('my')">Của tôi</div>
   </div>
 
-  <!-- MODAL LINK RAW -->
+  <main id="view-upload">
+    <div class="input-row">
+      <input type="text" id="filename" class="input-file" value="baomat.lua" placeholder="Tên file (VD: script.lua)">
+      <input type="password" id="password" class="input-pw" placeholder="Mật khẩu (nếu có)">
+      <select id="expire" class="input-exp">
+        <option value="0">Vĩnh viễn</option>
+        <option value="1">1 Giờ</option>
+        <option value="24">1 Ngày</option>
+        <option value="168">7 Ngày</option>
+      </select>
+    </div>
+
+    <div class="editor-wrapper">
+      <textarea id="code"></textarea>
+    </div>
+
+    <div class="options">
+      <label class="checkbox-group">
+        <input type="checkbox" id="protect-code"> Mã hóa bảo vệ code (Chỉ dành cho file .lua)
+      </label>
+      <button class="btn btn-primary" id="submitBtn">Tạo Link</button>
+    </div>
+  </main>
+
+  <main id="view-explore" style="display: none;">
+    <div class="list-container" id="explore-list"></div>
+  </main>
+
+  <main id="view-my" style="display: none;">
+    <div class="list-container" id="my-list"></div>
+  </main>
+
+  <footer>
+    &copy; 2024 Lua Share. Dữ liệu được lưu trữ qua API Pastes.dev.
+  </footer>
+
+  <!-- Modal Link -->
   <div id="modal">
     <div class="modal-content">
-      <h3>✅ Đã tạo link!</h3>
-      <p style="font-size: 12px; color: #888; margin-bottom: 8px;">Copy link Raw (dùng được với HttpGet):</p>
+      <h3>Tạo link thành công</h3>
       <input type="text" id="raw-link" readonly onclick="this.select()">
-      <button onclick="document.getElementById('modal').style.display='none'">Đóng</button>
+      <div style="display: flex; gap: 8px;">
+        <button class="btn btn-primary" style="flex:1" onclick="copyLink()">Copy Link</button>
+        <button class="btn" style="background:var(--border); flex:1" onclick="closeModal()">Đóng</button>
+      </div>
     </div>
   </div>
 
-  <!-- TOAST -->
   <div id="toast">Thông báo</div>
 
   <script>
-    // ===== KHỞI TẠO CODEMIRROR =====
+    // ===== KHỞI TẠO =====
     const editor = CodeMirror.fromTextArea(document.getElementById('code'), {
-      mode: "lua",
-      theme: "dracula",
-      lineNumbers: true,
-      autoCloseBrackets: true,
-      lineWrapping: true,
-      indentUnit: 4
+      mode: "lua", theme: "dracula", lineNumbers: true, autoCloseBrackets: true, lineWrapping: true, indentUnit: 4
     });
 
-    // ===== TỰ ĐỘNG NHẬN DIỆN NGÔN NGỮ =====
-    const filenameInput = document.getElementById('filename');
-    filenameInput.addEventListener('input', () => {
-      const name = filenameInput.value.toLowerCase();
-      let mode = "lua"; 
+    document.getElementById('filename').addEventListener('input', (e) => {
+      const name = e.target.value.toLowerCase();
+      let mode = "lua";
       if (name.endsWith('.js')) mode = "javascript";
       else if (name.endsWith('.py')) mode = "python";
       else if (name.endsWith('.html') || name.endsWith('.xml')) mode = "xml";
       else if (name.endsWith('.css')) mode = "css";
-      else if (name.endsWith('.json')) mode = { name: "javascript", json: true };
       editor.setOption("mode", mode);
     });
 
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      toast.textContent = msg;
-      toast.className = 'show';
-      setTimeout(() => { toast.className = toast.className.replace('show', ''); }, 3000);
+    // ===== HÀM TIỆN ÍCH =====
+    function toast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
     }
 
-    async function fetchBlob(id) {
-      const res = await fetch(`https://jsonblob.com/api/jsonBlob/${id}`);
-      if (!res.ok) throw new Error('Not found');
-      return await res.json();
+    function encodeData(data) { return btoa(unescape(encodeURIComponent(JSON.stringify(data)))); }
+    function decodeData(str) { return JSON.parse(decodeURIComponent(escape(atob(str)))); }
+    function getLocal(key) { return JSON.parse(localStorage.getItem(key) || '[]'); }
+    function setLocal(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
+
+    // Chuyển Tab
+    function switchTab(tab) {
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      document.getElementById('view-upload').style.display = tab === 'upload' ? 'flex' : 'none';
+      document.getElementById('view-explore').style.display = tab === 'explore' ? 'block' : 'none';
+      document.getElementById('view-my').style.display = tab === 'my' ? 'block' : 'none';
+
+      if (tab === 'explore') renderExplore();
+      if (tab === 'my') renderMy();
     }
 
-    async function saveBlob(id, data) {
-      const res = await fetch(`https://jsonblob.com/api/jsonBlob/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      });
-      if (!res.ok) throw new Error('Save failed');
+    // Đóng/Mở Modal
+    function closeModal() { document.getElementById('modal').style.display = 'none'; }
+    function copyLink() { 
+      navigator.clipboard.writeText(document.getElementById('raw-link').value);
+      toast('Đã copy link!');
     }
 
-    async function createBlob(data) {
-      const res = await fetch('https://jsonblob.com/api/jsonBlob', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      });
-      if (!res.ok) throw new Error('Create failed');
-      const location = res.headers.get('Location');
-      return location.split('/').pop();
-    }
-
-    // ===== GỬI CODE =====
+    // ===== LOGIC TẠO LINK =====
     document.getElementById('submitBtn').addEventListener('click', async () => {
       const code = editor.getValue();
-      let filename = filenameInput.value.trim() || 'baomat.lua';
+      let filename = document.getElementById('filename').value.trim() || 'baomat.lua';
       if (!filename.includes('.')) filename += '.lua';
-      const password = document.getElementById('password').value;
+      const pw = document.getElementById('password').value;
+      const expire = parseInt(document.getElementById('expire').value);
+      const isProtect = document.getElementById('protect-code').checked;
 
-      if (!code.trim()) return alert('Vui lòng nhập code!');
+      if (!code.trim()) return toast('Vui lòng nhập code!');
 
       const btn = document.getElementById('submitBtn');
-      btn.textContent = 'Đang lưu...'; btn.disabled = true;
+      btn.textContent = 'Đang xử lý...'; btn.disabled = true;
 
       try {
-        const payload = { filename, code, password: password || null };
-        const id = await createBlob(payload);
-        
-        // Link raw
-        const rawUrl = `${window.location.origin}/?raw=${id}`;
+        // Xử lý mã hóa (Obfuscate cơ bản)
+        let finalCode = code;
+        if (isProtect && filename.endsWith('.lua')) {
+          // Mã hóa Base64 và bọc trong hàm loadstring giải mã ngược
+          const b64 = btoa(unescape(encodeURIComponent(code)));
+          finalCode = `-- Protected Code\nlocal _c = "${b64}";\nlocal _d = _c:gsub(".", function(x) return string.char(x:byte() - 2) end);\nloadstring(_d)()`;
+        }
+
+        const expireAt = expire > 0 ? Date.now() + (expire * 3600000) : null;
+        const payload = encodeData({ filename, code: finalCode, password: pw || null, expireAt });
+
+        // Gửi API
+        const res = await fetch('https://api.pastes.dev/post', {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' },
+          body: payload
+        });
+
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        const rawUrl = `${window.location.origin}/?raw=${data.key}`;
+
+        // Lưu lịch sử
+        const now = Date.now();
+        let my = getLocal('my_scripts');
+        my.unshift({ id: data.key, filename, time: now, url: rawUrl });
+        setLocal('my_scripts', my);
+
+        let exp = getLocal('explore_scripts');
+        exp.unshift({ id: data.key, filename, time: now });
+        setLocal('explore_scripts', exp.slice(0, 20));
+
+        // Hiện kết quả
         document.getElementById('raw-link').value = rawUrl;
         document.getElementById('modal').style.display = 'flex';
-      } catch (err) {
-        alert('Lỗi server!');
-      } finally {
-        btn.textContent = 'Gửi & Tạo Link'; btn.disabled = false;
-      }
-    });
-
-    // ===== CẬP NHẬT CODE =====
-    document.getElementById('updateBtn').addEventListener('click', () => {
-      document.getElementById('update-modal').style.display = 'flex';
-    });
-
-    async function doUpdate() {
-      const id = document.getElementById('update-id').value.trim();
-      const pwInput = document.getElementById('update-pw').value;
-      const code = editor.getValue();
-      let filename = filenameInput.value.trim() || 'baomat.lua';
-      const newPassword = document.getElementById('password').value;
-
-      if (!id) return alert('Vui lòng nhập ID!');
-      if (!code.trim()) return alert('Chưa có code!');
-
-      try {
-        const oldData = await fetchBlob(id);
-        if (oldData.password && oldData.password !== pwInput) {
-          return alert('Sai mật khẩu!');
-        }
-        const newData = { filename, code, password: newPassword || oldData.password || null };
-        await saveBlob(id, newData);
         
-        document.getElementById('update-modal').style.display = 'none';
-        showToast('Cập nhật thành công!');
+        // Reset form
+        editor.setValue('');
+        document.getElementById('password').value = '';
       } catch (err) {
-        alert('Lỗi ID hoặc kết nối!');
+        toast('Lỗi khi kết nối tới Server!');
+      } finally {
+        btn.textContent = 'Tạo Link'; btn.disabled = false;
       }
+    });
+
+    // ===== RENDER DANH SÁCH =====
+    function renderExplore() {
+      const list = getLocal('explore_scripts');
+      const el = document.getElementById('explore-list');
+      if (!list.length) return el.innerHTML = '<p style="color:var(--muted)">Chưa có dữ liệu.</p>';
+
+      el.innerHTML = list.map(item => `
+        <div class="list-item">
+          <div class="item-info">
+            <h4>${item.filename}</h4>
+            <p>${new Date(item.time).toLocaleString('vi-VN')}</p>
+          </div>
+          <div class="item-actions">
+            <a href="/?raw=${item.id}" target="_blank" class="btn-sm btn-primary" style="background:var(--primary)">Xem Raw</a>
+          </div>
+        </div>
+      `).join('');
     }
 
-    // ===== TẢI TRANG: CHECK RAW MODE =====
+    function renderMy() {
+      const list = getLocal('my_scripts');
+      const el = document.getElementById('my-list');
+      if (!list.length) return el.innerHTML = '<p style="color:var(--muted)">Bạn chưa tạo script nào.</p>';
+
+      el.innerHTML = list.map((item, idx) => `
+        <div class="list-item">
+          <div class="item-info">
+            <h4>${item.filename}</h4>
+            <p>${new Date(item.time).toLocaleString('vi-VN')}</p>
+          </div>
+          <div class="item-actions">
+            <button onclick="navigator.clipboard.writeText('${item.url}'); toast('Đã copy!')" class="btn-sm btn-primary" style="background:var(--primary)">Copy Link</button>
+            <button onclick="deleteMy(${idx})" class="btn-sm btn-danger" style="background:var(--danger)">Xóa</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function deleteMy(index) {
+      let list = getLocal('my_scripts');
+      list.splice(index, 1);
+      setLocal('my_scripts', list);
+      renderMy();
+      toast('Đã xóa khỏi lịch sử.');
+    }
+
+    // ===== XỬ LÝ RAW LINK =====
     window.addEventListener('DOMContentLoaded', async () => {
       const urlParams = new URLSearchParams(window.location.search);
       const rawId = urlParams.get('raw');
       
       if (rawId) {
         try {
-          const data = await fetchBlob(rawId);
+          const res = await fetch(`https://api.pastes.dev/get/${rawId}`);
+          if (!res.ok) throw new Error('Not Found');
           
+          const text = await res.text();
+          const data = decodeData(text);
+          
+          if (data.expireAt && Date.now() > data.expireAt) {
+            document.body.innerHTML = '<h1 style="padding:20px;font-family:sans-serif;color:red;">404 - Link đã hết hạn!</h1>';
+            return;
+          }
+
           if (data.password) {
-            const inputPw = prompt('Script này có mật khẩu. Nhập mật khẩu để xem:');
-            if (inputPw !== data.password) {
-              document.body.innerHTML = '<h1 style="padding:20px;color:red">403 Forbidden - Sai mật khẩu!</h1>';
+            const input = prompt('Script này cần mật khẩu để xem:');
+            if (input !== data.password) {
+              document.body.innerHTML = '<h1 style="padding:20px;font-family:sans-serif;color:red;">403 - Sai mật khẩu!</h1>';
               return;
             }
           }
 
-          // BÍ QUYẾT Ở ĐÂY: Xóa sạch giao diện HTML, chỉ để lại text thuần!
+          // Hiển thị code thô
           document.body.innerHTML = ''; 
           document.body.className = 'raw-mode';
           document.body.textContent = data.code;
 
         } catch (e) {
-          document.body.innerHTML = '<h1 style="padding:20px;color:red">404 Not Found - Không tìm thấy code!</h1>';
+          document.body.innerHTML = '<h1 style="padding:20px;font-family:sans-serif;color:red;">404 - Không tìm thấy code!</h1>';
         }
       }
     });
