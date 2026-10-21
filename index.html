@@ -1,461 +1,295 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Huy Pham PRO - Tải Ảnh & Video</title>
-<style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: linear-gradient(135deg, #0a0a0a, #1a1a2e);
-    color: #fff;
-    min-height: 100vh;
-    padding: 20px;
-}
-.container { max-width: 700px; margin: 0 auto; }
-h1 {
-    text-align: center;
-    font-size: 2.2em;
-    background: linear-gradient(135deg, #f59e0b, #d97706);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-bottom: 5px;
-}
-.subtitle { text-align: center; color: #888; margin-bottom: 20px; font-size: 0.9em; }
-.card {
-    background: #1e1e2e;
-    border-radius: 16px;
-    padding: 25px;
-    margin-bottom: 20px;
-    border: 1px solid #333;
-}
-h3 { margin-bottom: 15px; font-size: 1.1em; }
-input, textarea {
-    width: 100%;
-    padding: 14px;
-    background: #2d2d3d;
-    border: 2px solid #444;
-    border-radius: 10px;
-    color: #fff;
-    font-size: 16px;
-    margin-bottom: 12px;
-    font-family: inherit;
-}
-input:focus, textarea:focus { outline: none; border-color: #8b5cf6; }
-button {
-    width: 100%;
-    padding: 14px;
-    background: linear-gradient(135deg, #8b5cf6, #d946ef);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(139,92,246,0.3); }
-button:disabled { opacity: 0.5; cursor: not-allowed; }
-.result {
-    margin-top: 15px;
-    padding: 20px;
-    background: #2d2d3d;
-    border-radius: 12px;
-    display: none;
-}
-.result.show { display: block; }
-video {
-    width: 100%;
-    border-radius: 10px;
-    margin: 10px 0;
-    max-height: 500px;
-    background: #000;
-}
-.media-item {
-    background: #1a1a2e;
-    border-radius: 12px;
-    padding: 12px;
-    margin-bottom: 12px;
-    border: 1px solid #333;
-}
-.media-item img, .media-item video {
-    width: 100%;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    max-height: 400px;
-    object-fit: contain;
-    background: #000;
-}
-.btn-group {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-top: 10px;
-}
-.btn-green { background: #22c55e; }
-.btn-blue { background: #3b82f6; }
-.btn-red { background: #ef4444; }
-.btn-orange { background: #f59e0b; }
-.btn-purple { background: #8b5cf6; }
-.platform-badge {
-    display: inline-block;
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 700;
-    margin-bottom: 10px;
-}
-.badge-tiktok { background: linear-gradient(135deg, #25f4ee, #fe2c55); }
-.badge-instagram { background: linear-gradient(135deg, #f58529, #dd2a7b, #8134af); }
-.badge-facebook { background: #1877f2; }
-.badge-unknown { background: #666; }
-.status {
-    padding: 12px;
-    border-radius: 8px;
-    margin-top: 12px;
-    font-size: 14px;
-    display: none;
-}
-.status.show { display: block; }
-.status.info { background: #1e3a5f; color: #93c5fd; }
-.status.error { background: #450a0a; color: #fca5a5; }
-.status.success { background: #052e16; color: #86efac; }
-.info-box {
-    background: #1a1a2e;
-    border-radius: 12px;
-    padding: 15px;
-    margin-bottom: 15px;
-    border-left: 4px solid #8b5cf6;
-    font-size: 13px;
-    color: #aaa;
-    line-height: 1.6;
-}
-.platforms {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-}
-.platform-chip {
-    padding: 8px 14px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    background: #2d2d3d;
-    border: 1px solid #444;
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Share Code - Pro</title>
+  
+  <!-- Thư viện CodeMirror và các mode ngôn ngữ -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/lua/lua.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/python/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/xml/xml.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/css/css.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/edit/closebrackets.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #121212; --panel: #1e1e1e; --border: #333; --text: #e0e0e0;
+      --text-muted: #888; --btn-blue: #3b5998; --btn-blue-hover: #4a6cb5;
+      --btn-green: #27ae60; --btn-green-hover: #2ecc71;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+    
+    header { display: flex; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--border); align-items: center; }
+    .header-left, .header-right { display: flex; gap: 16px; align-items: center; color: var(--text-muted); }
+    header svg { width: 20px; height: 20px; fill: currentColor; cursor: pointer; }
+    
+    .banner-container { padding: 12px 16px; }
+    .banner { width: 100%; height: 100px; border-radius: 8px; background: url('https://i.ibb.co/3s6y6v1/doraemon.jpg') center/cover; position: relative; overflow: hidden; }
+    .banner-text { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.6); color: white; padding: 2px 6px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+
+    .tabs { display: flex; gap: 8px; padding: 0 16px 12px 16px; }
+    .tab { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px; border: 1px solid var(--border); border-radius: 8px; background: transparent; color: var(--text); font-size: 14px; text-decoration: none; cursor: pointer; }
+    .tab svg { width: 16px; height: 16px; fill: currentColor; }
+
+    main { padding: 0 16px 16px 16px; flex: 1; display: flex; flex-direction: column; }
+    .input-group { display: flex; gap: 8px; margin-bottom: 12px; }
+    .filename-input, .password-input { padding: 14px 16px; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 16px; outline: none; }
+    .filename-input { flex: 1; }
+    .password-input { width: 140px; }
+    
+    .editor-container { flex: 1; min-height: 300px; margin-bottom: 16px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+    .CodeMirror { height: 100% !important; font-family: monospace !important; font-size: 14px !important; }
+
+    .action-row { display: flex; gap: 8px; }
+    .btn { padding: 14px; border: none; border-radius: 8px; font-size: 16px; font-weight: 500; cursor: pointer; color: white; transition: 0.2s; }
+    .submit-btn { flex: 1; background: var(--btn-blue); }
+    .submit-btn:hover { background: var(--btn-blue-hover); }
+    .update-btn { background: #e67e22; padding: 14px 20px; }
+    .update-btn:hover { background: #d35400; }
+
+    footer { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-top: 1px solid var(--border); font-size: 14px; color: var(--text); }
+    .footer-links { display: flex; gap: 16px; align-items: center; }
+    .footer-links a { color: var(--text); text-decoration: none; }
+    .footer-icons { display: flex; gap: 16px; align-items: center; }
+    .footer-icons svg { width: 20px; height: 20px; fill: currentColor; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; background: #e74c3c; }
+
+    /* Modal */
+    #modal, #update-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; }
+    .modal-content { background: var(--panel); padding: 20px; border-radius: 12px; width: 90%; max-width: 400px; border: 1px solid var(--border); }
+    .modal-content h3 { margin-bottom: 12px; color: #fff; }
+    .modal-content input { width: 100%; padding: 10px; background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 6px; margin-bottom: 16px; outline: none; }
+    .modal-content button { width: 100%; padding: 10px; background: var(--btn-blue); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; }
+
+    /* Toast */
+    #toast { visibility: hidden; min-width: 250px; background-color: #333; color: #fff; text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 2000; left: 50%; bottom: 30px; transform: translateX(-50%); font-size: 14px; opacity: 0; transition: opacity 0.3s, bottom 0.3s; }
+    #toast.show { visibility: visible; opacity: 1; bottom: 50px; }
+
+    /* CSS DÀNH RIÊNG CHO CHẾ ĐỘ RAW TEXT */
+    body.raw-mode { background: #fff !important; color: #000 !important; display: block !important; padding: 10px !important; font-family: monospace !important; white-space: pre-wrap !important; word-wrap: break-word !important; }
+  </style>
 </head>
 <body>
-<div class="container">
-    <h1>👑 HUY PHAM PRO</h1>
-    <p class="subtitle">Tải Ảnh & Video Đa Nền Tảng</p>
 
-    <div class="platforms">
-        <span class="platform-chip">🎵 TikTok</span>
-        <span class="platform-chip">📷 Instagram</span>
-        <span class="platform-chip">📘 Facebook</span>
+  <!-- GIAO DIỆN UPLOAD -->
+  <div id="upload-mode" style="display:flex; flex-direction:column; min-height:100vh;">
+    <header>
+      <div class="header-left"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></div>
+      <div class="header-right">
+        <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+        <span style="border: 1px solid var(--border); padding: 2px 8px; border-radius: 12px; font-size: 12px;">Pro</span>
+      </div>
+    </header>
+
+    <div class="banner-container">
+      <div class="banner"><div class="banner-text">Share Code</div></div>
     </div>
 
-    <div class="card">
-        <h3>🔗 Dán link (ảnh hoặc video)</h3>
-        <div class="info-box">
-            💡 Dán link Instagram/TikTok/Facebook → Bấm tải → Tất cả ảnh & video sẽ hiện xuống bên dưới.
-        </div>
-        <input type="url" id="url-input" placeholder="https://www.instagram.com/p/... hoặc /reel/...">
-        <button id="btn-download" onclick="downloadMedia()">🚀 Lấy Tất Cả Ảnh & Video</button>
-        <div class="status" id="status-download"></div>
+    <div class="tabs">
+      <a href="#" class="tab"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg> trang chủ</a>
+      <a href="#" class="tab" onclick="alert('Tính năng đang phát triển!')"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg> khám phá</a>
     </div>
 
-    <div class="card result" id="result-download">
-        <div id="platform-badge"></div>
-        <div id="media-info" class="info-box"></div>
-        <h3>📥 Danh sách media (${''})</h3>
-        <div id="media-list"></div>
+    <main>
+      <div class="input-group">
+        <input type="text" id="filename" class="filename-input" value="baomat.lua" placeholder="Tên file (kèm đuôi, vd: baomat.lua)" />
+        <input type="password" id="password" class="password-input" placeholder="Mật khẩu (tuỳ chọn)" />
+      </div>
+      
+      <div class="editor-container">
+        <textarea id="code"></textarea>
+      </div>
+
+      <div class="action-row">
+        <button class="btn submit-btn" id="submitBtn">Gửi & Tạo Link</button>
+        <button class="btn update-btn" id="updateBtn">Cập nhật ID cũ</button>
+      </div>
+    </main>
+
+    <footer>
+      <div class="footer-links">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg>
+        <a href="#">discord</a><a href="#">imprint</a><a href="#">privacy</a>
+      </div>
+      <div class="footer-icons">
+        <svg viewBox="0 0 24 24"><path d="M12 2L1 21h22L12 2zm0 3.83L19.5 19h-15L12 5.83zM11 16h2v2h-2v-2zm0-6h2v4h-2v-4z"/></svg>
+        <div class="dot"></div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- MODAL NHẬP ID ĐỂ CẬP NHẬT -->
+  <div id="update-modal">
+    <div class="modal-content">
+      <h3>🔄 Cập nhật Code</h3>
+      <p style="font-size: 12px; color: #888; margin-bottom: 8px;">Nhập ID (đuôi link raw) và mật khẩu cũ:</p>
+      <input type="text" id="update-id" placeholder="Ví dụ: 123456789">
+      <input type="password" id="update-pw" placeholder="Mật khẩu cũ (nếu có)">
+      <button onclick="doUpdate()">Xác nhận cập nhật</button>
+      <button style="margin-top: 8px; background: transparent; border: 1px solid var(--border);" onclick="document.getElementById('update-modal').style.display='none'">Hủy</button>
     </div>
+  </div>
 
-    <div class="info-box" style="margin-top:20px;text-align:center;font-size:12px;">
-        © 2024 <strong>Huy Pham PRO</strong> · Made with ❤️
+  <!-- MODAL LINK RAW -->
+  <div id="modal">
+    <div class="modal-content">
+      <h3>✅ Đã tạo link!</h3>
+      <p style="font-size: 12px; color: #888; margin-bottom: 8px;">Copy link Raw (dùng được với HttpGet):</p>
+      <input type="text" id="raw-link" readonly onclick="this.select()">
+      <button onclick="document.getElementById('modal').style.display='none'">Đóng</button>
     </div>
-</div>
+  </div>
 
-<script>
-function setStatus(id, msg, type) {
-    const el = document.getElementById(id);
-    el.textContent = msg;
-    el.className = 'status show ' + type;
-}
+  <!-- TOAST -->
+  <div id="toast">Thông báo</div>
 
-function detectPlatform(url) {
-    if (url.includes('tiktok.com') || url.includes('vt.tiktok')) return 'tiktok';
-    if (url.includes('instagram.com')) return 'instagram';
-    if (url.includes('facebook.com') || url.includes('fb.watch')) return 'facebook';
-    return 'unknown';
-}
-
-// ==================== TẢI CHÍNH ====================
-async function downloadMedia() {
-    const url = document.getElementById('url-input').value.trim();
-    if (!url) { setStatus('status-download', '❌ Vui lòng nhập link!', 'error'); return; }
-
-    const platform = detectPlatform(url);
-    const btn = document.getElementById('btn-download');
-    btn.disabled = true; btn.textContent = '⏳ Đang xử lý...';
-    setStatus('status-download', `⏳ Đang lấy dữ liệu...`, 'info');
-
-    try {
-        let result;
-        if (platform === 'tiktok') result = await fetchTikTok(url);
-        else if (platform === 'instagram') result = await fetchInstagram(url);
-        else if (platform === 'facebook') result = await fetchFacebook(url);
-        else throw new Error('Chỉ hỗ trợ TikTok, Instagram, Facebook');
-
-        renderResult(platform, result);
-        setStatus('status-download', `✅ Tìm thấy ${result.media.length} media!`, 'success');
-    } catch (err) {
-        setStatus('status-download', '❌ ' + err.message, 'error');
-    } finally {
-        btn.disabled = false; btn.textContent = '🚀 Lấy Tất Cả Ảnh & Video';
-    }
-}
-
-// ==================== TIKTOK ====================
-async function fetchTikTok(url) {
-    const res = await fetch(`https://www.tikwm.com/api/?url=${encodeURIComponent(url)}`);
-    const json = await res.json();
-    if (json.code !== 0) throw new Error(json.msg || 'Không tải được TikTok');
-    
-    const d = json.data;
-    const media = [];
-    if (d.play) media.push({ type: 'video', url: d.play, thumb: d.cover });
-    if (d.images && d.images.length > 0) {
-        d.images.forEach(img => media.push({ type: 'image', url: img }));
-    } else if (d.cover) {
-        media.push({ type: 'image', url: d.cover });
-    }
-    
-    return {
-        title: d.title || 'Video TikTok',
-        author: d.author?.unique_id || 'Unknown',
-        media: media
-    };
-}
-
-// ==================== INSTAGRAM (nhiều API dự phòng) ====================
-async function fetchInstagram(url) {
-    // Chuẩn hoá link
-    const cleanUrl = url.split('?')[0].replace(/\/$/, '') + '/';
-
-    // Danh sách API dự phòng (dùng proxy CORS)
-    const APIs = [
-        // API 1: Instagram Save (qua corsproxy)
-        async () => {
-            const apiUrl = `https://api.cobalt.tools/api/json`;
-            const res = await fetch(apiUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                body: JSON.stringify({ url: cleanUrl, vQuality: '720' })
-            });
-            const data = await res.json();
-            if (data.status === 'stream' || data.status === 'redirect') {
-                return [{ type: 'video', url: data.url }];
-            }
-            if (data.status === 'picker' && data.picker) {
-                return data.picker.map(p => ({ type: p.type === 'video' ? 'video' : 'image', url: p.url }));
-            }
-            throw new Error('cobalt không trả về dữ liệu');
-        },
-
-        // API 2: Instagram qua snapinsta proxy
-        async () => {
-            const formData = new URLSearchParams();
-            formData.append('url', cleanUrl);
-            const res = await fetch('https://snapinsta.app/action.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'User-Agent': 'Mozilla/5.0'
-                },
-                body: formData.toString()
-            });
-            const html = await res.text();
-            return parseInstagramHtml(html);
-        },
-
-        // API 3: Instagram qua allorigins
-        async () => {
-            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(cleanUrl)}`;
-            const res = await fetch(proxyUrl);
-            const html = await res.text();
-            return parseInstagramHtml(html);
-        }
-    ];
-
-    let lastError = null;
-    for (const fn of APIs) {
-        try {
-            const media = await fn();
-            if (media && media.length > 0) {
-                return {
-                    title: 'Instagram Post',
-                    author: 'Instagram User',
-                    media: media
-                };
-            }
-        } catch (e) {
-            lastError = e;
-        }
-    }
-    throw new Error('Không lấy được Instagram. ' + (lastError?.message || ''));
-}
-
-function parseInstagramHtml(html) {
-    const media = [];
-
-    // Video
-    const videoPatterns = [
-        /"video_url":"([^"]+)"/g,
-        /<meta property="og:video" content="([^"]+)"/g,
-        /"contentUrl":"([^"]+\.mp4[^"]*?)"/g
-    ];
-    for (const pattern of videoPatterns) {
-        const matches = [...html.matchAll(pattern)];
-        for (const m of matches) {
-            const url = decodeUrl(m[1]);
-            if (url && !media.find(x => x.url === url)) {
-                media.push({ type: 'video', url });
-            }
-        }
-    }
-
-    // Ảnh - lấy tất cả display_url
-    const imgMatches = [...html.matchAll(/"display_url":"([^"]+)"/g)];
-    for (const m of imgMatches) {
-        const url = decodeUrl(m[1]);
-        if (url && !media.find(x => x.url === url)) {
-            media.push({ type: 'image', url });
-        }
-    }
-
-    // Ảnh từ og:image (dự phòng)
-    if (media.length === 0) {
-        const ogImg = html.match(/<meta property="og:image" content="([^"]+)"/);
-        if (ogImg) media.push({ type: 'image', url: decodeUrl(ogImg[1]) });
-    }
-
-    return media;
-}
-
-function decodeUrl(str) {
-    return str
-        .replace(/\\u0026/g, '&')
-        .replace(/\\u003D/g, '=')
-        .replace(/\\u002F/g, '/')
-        .replace(/\\/g, '')
-        .replace(/&amp;/g, '&');
-}
-
-// ==================== FACEBOOK ====================
-async function fetchFacebook(url) {
-    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
-    const res = await fetch(proxyUrl);
-    const html = await res.text();
-
-    const media = [];
-    const hdMatch = html.match(/"hd_src":"([^"]+)"/);
-    const sdMatch = html.match(/"sd_src":"([^"]+)"/);
-    const imgMatch = html.match(/"preview_image_url":"([^"]+)"/);
-
-    if (hdMatch) media.push({ type: 'video', url: decodeUrl(hdMatch[1]) });
-    else if (sdMatch) media.push({ type: 'video', url: decodeUrl(sdMatch[1]) });
-    if (imgMatch) media.push({ type: 'image', url: decodeUrl(imgMatch[1]) });
-
-    if (media.length === 0) throw new Error('Không tìm thấy media Facebook');
-
-    return {
-        title: 'Facebook Media',
-        author: 'Facebook User',
-        media: media
-    };
-}
-
-// ==================== HIỂN THỊ TẤT CẢ MEDIA ====================
-function renderResult(platform, result) {
-    const badges = {
-        tiktok: { text: '🎵 TikTok', cls: 'badge-tiktok' },
-        instagram: { text: '📷 Instagram', cls: 'badge-instagram' },
-        facebook: { text: '📘 Facebook', cls: 'badge-facebook' }
-    };
-    const b = badges[platform];
-    document.getElementById('platform-badge').innerHTML = `<span class="platform-badge ${b.cls}">${b.text}</span>`;
-
-    document.getElementById('media-info').innerHTML = `
-        <strong>📝 ${result.title}</strong><br>
-        👤 ${result.author}<br>
-        📦 Tổng: <strong>${result.media.length}</strong> media
-    `;
-
-    const list = document.getElementById('media-list');
-    list.innerHTML = '';
-
-    result.media.forEach((item, i) => {
-        const div = document.createElement('div');
-        div.className = 'media-item';
-
-        if (item.type === 'video') {
-            div.innerHTML = `
-                <div style="font-size:12px;color:#8b5cf6;font-weight:600;margin-bottom:8px;">🎬 Video ${i + 1}</div>
-                <video controls playsinline preload="metadata" src="${item.url}"></video>
-                <div class="btn-group">
-                    <button class="btn-green" onclick="downloadFile('${item.url}', 'huypham_video_${i + 1}.mp4')">⬇️ Tải Video</button>
-                    <button class="btn-blue" onclick="copyLink('${item.url}')">📋 Copy Link</button>
-                </div>
-            `;
-        } else {
-            div.innerHTML = `
-                <div style="font-size:12px;color:#22c55e;font-weight:600;margin-bottom:8px;">🖼️ Ảnh ${i + 1}</div>
-                <img src="${item.url}" loading="lazy" onerror="this.style.display='none'">
-                <div class="btn-group">
-                    <button class="btn-green" onclick="downloadFile('${item.url}', 'huypham_image_${i + 1}.jpg')">⬇️ Tải Ảnh</button>
-                    <button class="btn-blue" onclick="copyLink('${item.url}')">📋 Copy Link</button>
-                </div>
-            `;
-        }
-        list.appendChild(div);
+  <script>
+    // ===== KHỞI TẠO CODEMIRROR =====
+    const editor = CodeMirror.fromTextArea(document.getElementById('code'), {
+      mode: "lua",
+      theme: "dracula",
+      lineNumbers: true,
+      autoCloseBrackets: true,
+      lineWrapping: true,
+      indentUnit: 4
     });
 
-    document.getElementById('result-download').classList.add('show');
-}
+    // ===== TỰ ĐỘNG NHẬN DIỆN NGÔN NGỮ =====
+    const filenameInput = document.getElementById('filename');
+    filenameInput.addEventListener('input', () => {
+      const name = filenameInput.value.toLowerCase();
+      let mode = "lua"; 
+      if (name.endsWith('.js')) mode = "javascript";
+      else if (name.endsWith('.py')) mode = "python";
+      else if (name.endsWith('.html') || name.endsWith('.xml')) mode = "xml";
+      else if (name.endsWith('.css')) mode = "css";
+      else if (name.endsWith('.json')) mode = { name: "javascript", json: true };
+      editor.setOption("mode", mode);
+    });
 
-// ==================== HELPERS ====================
-function downloadFile(url, filename) {
-    if (!url) return alert('Chưa có file!');
-    
-    // Dùng fetch để tải qua blob (vượt CORS)
-    fetch(url, { mode: 'cors' })
-        .then(res => res.blob())
-        .then(blob => {
-            const blobUrl = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = blobUrl;
-            a.download = filename || 'huypham_file';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            setTimeout(() => URL.revokeObjectURL(blobUrl), 3000);
-        })
-        .catch(() => {
-            // Fallback mở tab mới nếu CORS chặn
-            window.open(url, '_blank');
-        });
-}
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.className = 'show';
+      setTimeout(() => { toast.className = toast.className.replace('show', ''); }, 3000);
+    }
 
-function copyLink(url) {
-    if (!url) return alert('Chưa có link!');
-    navigator.clipboard.writeText(url).then(() => alert('✅ Đã copy link!'));
-}
-</script>
+    async function fetchBlob(id) {
+      const res = await fetch(`https://jsonblob.com/api/jsonBlob/${id}`);
+      if (!res.ok) throw new Error('Not found');
+      return await res.json();
+    }
+
+    async function saveBlob(id, data) {
+      const res = await fetch(`https://jsonblob.com/api/jsonBlob/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      if (!res.ok) throw new Error('Save failed');
+    }
+
+    async function createBlob(data) {
+      const res = await fetch('https://jsonblob.com/api/jsonBlob', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      if (!res.ok) throw new Error('Create failed');
+      const location = res.headers.get('Location');
+      return location.split('/').pop();
+    }
+
+    // ===== GỬI CODE =====
+    document.getElementById('submitBtn').addEventListener('click', async () => {
+      const code = editor.getValue();
+      let filename = filenameInput.value.trim() || 'baomat.lua';
+      if (!filename.includes('.')) filename += '.lua';
+      const password = document.getElementById('password').value;
+
+      if (!code.trim()) return alert('Vui lòng nhập code!');
+
+      const btn = document.getElementById('submitBtn');
+      btn.textContent = 'Đang lưu...'; btn.disabled = true;
+
+      try {
+        const payload = { filename, code, password: password || null };
+        const id = await createBlob(payload);
+        
+        // Link raw
+        const rawUrl = `${window.location.origin}/?raw=${id}`;
+        document.getElementById('raw-link').value = rawUrl;
+        document.getElementById('modal').style.display = 'flex';
+      } catch (err) {
+        alert('Lỗi server!');
+      } finally {
+        btn.textContent = 'Gửi & Tạo Link'; btn.disabled = false;
+      }
+    });
+
+    // ===== CẬP NHẬT CODE =====
+    document.getElementById('updateBtn').addEventListener('click', () => {
+      document.getElementById('update-modal').style.display = 'flex';
+    });
+
+    async function doUpdate() {
+      const id = document.getElementById('update-id').value.trim();
+      const pwInput = document.getElementById('update-pw').value;
+      const code = editor.getValue();
+      let filename = filenameInput.value.trim() || 'baomat.lua';
+      const newPassword = document.getElementById('password').value;
+
+      if (!id) return alert('Vui lòng nhập ID!');
+      if (!code.trim()) return alert('Chưa có code!');
+
+      try {
+        const oldData = await fetchBlob(id);
+        if (oldData.password && oldData.password !== pwInput) {
+          return alert('Sai mật khẩu!');
+        }
+        const newData = { filename, code, password: newPassword || oldData.password || null };
+        await saveBlob(id, newData);
+        
+        document.getElementById('update-modal').style.display = 'none';
+        showToast('Cập nhật thành công!');
+      } catch (err) {
+        alert('Lỗi ID hoặc kết nối!');
+      }
+    }
+
+    // ===== TẢI TRANG: CHECK RAW MODE =====
+    window.addEventListener('DOMContentLoaded', async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const rawId = urlParams.get('raw');
+      
+      if (rawId) {
+        try {
+          const data = await fetchBlob(rawId);
+          
+          if (data.password) {
+            const inputPw = prompt('Script này có mật khẩu. Nhập mật khẩu để xem:');
+            if (inputPw !== data.password) {
+              document.body.innerHTML = '<h1 style="padding:20px;color:red">403 Forbidden - Sai mật khẩu!</h1>';
+              return;
+            }
+          }
+
+          // BÍ QUYẾT Ở ĐÂY: Xóa sạch giao diện HTML, chỉ để lại text thuần!
+          document.body.innerHTML = ''; 
+          document.body.className = 'raw-mode';
+          document.body.textContent = data.code;
+
+        } catch (e) {
+          document.body.innerHTML = '<h1 style="padding:20px;color:red">404 Not Found - Không tìm thấy code!</h1>';
+        }
+      }
+    });
+  </script>
 </body>
 </html>
