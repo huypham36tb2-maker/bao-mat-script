@@ -25,24 +25,19 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
     
-    /* Header */
     header { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; border-bottom: 1px solid var(--border); background: var(--bg); }
     .logo { font-weight: 700; font-size: 18px; letter-spacing: -0.5px; }
     
-    /* Banner */
     .banner-container { padding: 16px 24px 0; max-width: 1000px; margin: 0 auto; width: 100%; }
     .banner { width: 100%; height: 140px; border-radius: 8px; background: url('https://www.image2url.com/r2/default/gifs/1792619935669-6803e9fd-f753-4013-8516-5e35b55ddcc0.gif') center/cover; border: 1px solid var(--border); }
 
-    /* Tabs */
     .nav-tabs { display: flex; gap: 24px; padding: 0 24px; border-bottom: 1px solid var(--border); background: var(--bg); max-width: 1000px; margin: 16px auto 0; width: 100%; }
     .nav-item { padding: 12px 0; color: var(--muted); font-size: 14px; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; }
     .nav-item:hover { color: var(--text); }
     .nav-item.active { color: var(--text); border-bottom-color: var(--primary); }
 
-    /* Main Content */
     main { flex: 1; padding: 24px; display: flex; flex-direction: column; max-width: 1000px; margin: 0 auto; width: 100%; }
     
-    /* Form */
     .input-row { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
     input[type="text"], input[type="password"], select {
       background: var(--panel); border: 1px solid var(--border); color: var(--text);
@@ -53,11 +48,9 @@
     .input-pw { width: 160px; }
     .input-exp { width: 130px; }
 
-    /* Editor */
     .editor-wrapper { flex: 1; min-height: 350px; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin-bottom: 16px; display: flex; flex-direction: column; }
     .CodeMirror { height: 100% !important; font-family: 'Fira Code', 'Courier New', monospace !important; font-size: 14px !important; }
 
-    /* Options & Buttons */
     .options { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
     .checkbox-group { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); cursor: pointer; }
     
@@ -67,7 +60,6 @@
     .btn-danger { background: var(--danger); }
     .btn-danger:hover { opacity: 0.8; }
 
-    /* Lists */
     .list-container { display: flex; flex-direction: column; gap: 12px; }
     .list-item { background: var(--panel); border: 1px solid var(--border); border-radius: 6px; padding: 16px; display: flex; justify-content: space-between; align-items: center; }
     .item-info h4 { font-size: 15px; margin-bottom: 4px; color: var(--text); }
@@ -75,7 +67,6 @@
     .item-actions { display: flex; gap: 8px; }
     .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 4px; border: none; cursor: pointer; color: white; text-decoration: none; display: inline-block; }
     
-    /* Modal & Toast */
     #modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 50; align-items: center; justify-content: center; }
     .modal-content { background: var(--panel); border: 1px solid var(--border); padding: 24px; border-radius: 8px; width: 100%; max-width: 450px; }
     .modal-content h3 { margin-bottom: 16px; font-size: 18px; }
@@ -83,21 +74,7 @@
     #toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--panel); border: 1px solid var(--border); color: var(--text); padding: 12px 24px; border-radius: 6px; font-size: 14px; opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 100; }
     #toast.show { opacity: 1; }
     
-    /* Footer */
     footer { padding: 24px; text-align: center; border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; margin-top: auto; }
-
-    /* RAW Mode (Troll Screen) */
-    body.raw-mode { 
-      background: #050505 !important; color: #ff003c !important; padding: 0 !important; font-family: 'Courier New', monospace !important; 
-      display: flex !important; justify-content: center !important; align-items: center !important; height: 100vh !important; 
-      flex-direction: column !important; user-select: none !important; overflow: hidden !important;
-    }
-    .troll-title {
-      font-size: 3rem; text-align: center; text-shadow: 0 0 10px #ff003c, 0 0 20px #ff003c, 0 0 40px #ff003c;
-      animation: flicker 1.5s infinite alternate; margin-bottom: 20px;
-    }
-    .troll-text { color: #888; font-size: 1.2rem; }
-    @keyframes flicker { 0% { opacity: 0.8; } 100% { opacity: 1; text-shadow: 0 0 20px #ff003c, 0 0 50px #ff003c; } }
   </style>
 </head>
 <body>
@@ -149,7 +126,7 @@
   </main>
 
   <footer>
-    &copy; 2024 Lua Share. Dữ liệu được lưu trữ qua API Pastes.dev.
+    &copy; 2024 Lua Share. Dữ liệu được lưu trữ qua API Dpaste.
   </footer>
 
   <div id="modal">
@@ -166,7 +143,6 @@
   <div id="toast">Thông báo</div>
 
   <script>
-    // ===== KHỞI TẠO =====
     const editor = CodeMirror.fromTextArea(document.getElementById('code'), {
       mode: "lua", theme: "dracula", lineNumbers: true, autoCloseBrackets: true, lineWrapping: true, indentUnit: 4
     });
@@ -181,7 +157,6 @@
       editor.setOption("mode", mode);
     });
 
-    // ===== HÀM TIỆN ÍCH =====
     function toast(msg) {
       const t = document.getElementById('toast');
       t.textContent = msg; t.classList.add('show');
@@ -211,13 +186,12 @@
       toast('Đã copy link!');
     }
 
-    // ===== LOGIC TẠO LINK =====
+    // ===== LOGIC TẠO LINK SỬ DỤNG DPASTE API =====
     document.getElementById('submitBtn').addEventListener('click', async () => {
       const code = editor.getValue();
       let filename = document.getElementById('filename').value.trim() || 'baomat.lua';
       if (!filename.includes('.')) filename += '.lua';
       const pw = document.getElementById('password').value;
-      const expire = parseInt(document.getElementById('expire').value);
       const isProtect = document.getElementById('protect-code').checked;
 
       if (!code.trim()) return toast('Vui lòng nhập code!');
@@ -228,57 +202,53 @@
       try {
         let finalCode = code;
         
-        // Xử lý mã hóa Obfuscate cơ bản (nếu được chọn)
         if (isProtect && filename.endsWith('.lua')) {
           const b64 = btoa(unescape(encodeURIComponent(code)));
-          // Code Lua tự giải mã và chạy (dùng cho loadstring)
           finalCode = `-- Protected Code\nlocal _c = "${b64}";\nlocal _d = _c:gsub(".", function(x) return string.char(x:byte() - 2) end);\nloadstring(_d)()`;
         }
 
-        const expireAt = expire > 0 ? Date.now() + (expire * 3600000) : null;
-        const payload = encodeData({ filename, code: finalCode, password: pw || null, expireAt });
+        const payload = encodeData({ filename, code: finalCode, password: pw || null });
 
-        // Gửi API lên Pastes.dev
-        const res = await fetch('https://api.pastes.dev/post', {
+        // Gửi API lên Dpaste (hỗ trợ CORS tốt hơn Pastes.dev)
+        const res = await fetch('https://dpaste.com/api/v2/', {
           method: 'POST',
-          headers: { 'Content-Type': 'text/plain' },
-          body: payload
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+            'content': payload,
+            'syntax': 'text',
+            'expiry_days': '365'
+          })
         });
 
-        if (!res.ok) throw new Error();
-        const data = await res.json();
-        const rawUrl = `${window.location.origin}${window.location.pathname}?raw=${data.key}`;
+        if (!res.ok) throw new Error('Lỗi API');
+        const textData = await res.text();
+        
+        // Lấy ID từ URL trả về (VD: https://dpaste.com/ABC123 -> Lấy ABC123)
+        const pasteId = textData.trim().split('/').pop();
+        const rawUrl = `${window.location.origin}${window.location.pathname}?raw=${pasteId}`;
 
-        // Lưu lịch sử
         const now = Date.now();
         let my = getLocal('my_scripts');
-        my.unshift({ id: data.key, filename, time: now, url: rawUrl });
+        my.unshift({ id: pasteId, filename, time: now, url: rawUrl });
         setLocal('my_scripts', my);
 
-        let exp = getLocal('explore_scripts');
-        exp.unshift({ id: data.key, filename, time: now });
-        setLocal('explore_scripts', exp.slice(0, 20));
-
-        // Hiện kết quả
         document.getElementById('raw-link').value = rawUrl;
         document.getElementById('modal').style.display = 'flex';
         
-        // Reset form
         editor.setValue('');
         document.getElementById('password').value = '';
       } catch (err) {
         toast('Lỗi khi kết nối tới Server!');
+        console.error(err);
       } finally {
         btn.textContent = 'Tạo Link'; btn.disabled = false;
       }
     });
 
-    // ===== RENDER DANH SÁCH =====
     function renderExplore() {
       const list = getLocal('explore_scripts');
       const el = document.getElementById('explore-list');
       if (!list.length) return el.innerHTML = '<p style="color:var(--muted)">Chưa có dữ liệu.</p>';
-
       el.innerHTML = list.map(item => `
         <div class="list-item">
           <div class="item-info">
@@ -296,7 +266,6 @@
       const list = getLocal('my_scripts');
       const el = document.getElementById('my-list');
       if (!list.length) return el.innerHTML = '<p style="color:var(--muted)">Bạn chưa tạo script nào.</p>';
-
       el.innerHTML = list.map((item, idx) => `
         <div class="list-item">
           <div class="item-info">
@@ -319,26 +288,20 @@
       toast('Đã xóa khỏi lịch sử.');
     }
 
-    // ===== XỬ LÝ RAW LINK (ĐÃ FIX LỖI DELTA) =====
+    // ===== XỬ LÝ RAW LINK =====
     window.addEventListener('DOMContentLoaded', async () => {
       const urlParams = new URLSearchParams(window.location.search);
       const rawId = urlParams.get('raw');
       
       if (rawId) {
         try {
-          const res = await fetch(`https://api.pastes.dev/get/${rawId}`);
+          // Lấy code từ Dpaste
+          const res = await fetch(`https://dpaste.com/${rawId}.txt`);
           if (!res.ok) throw new Error('Not Found');
           
           const text = await res.text();
           const data = decodeData(text);
           
-          // 1. Kiểm tra hết hạn
-          if (data.expireAt && Date.now() > data.expireAt) {
-            document.body.innerHTML = '<h1 style="padding:20px;font-family:sans-serif;color:red;">404 - Link đã hết hạn!</h1>';
-            return;
-          }
-
-          // 2. Kiểm tra mật khẩu
           if (data.password) {
             const input = prompt('Script này cần mật khẩu để xem:');
             if (input !== data.password) {
@@ -347,25 +310,9 @@
             }
           }
 
-          // 3. TRẢ VỀ CODE LUA THUẦN (FIX LỖI DELTA)
-          // Xóa bỏ logic check isBrowser, luôn trả về code thô để loadstring hoạt động.
-          // Để chống người dùng mở link bằng trình duyệt, ta có thể dùng Javascript để xóa body,
-          // nhưng nếu họ dùng Delta, Delta sẽ lấy textContent (chỉ lấy text, bỏ qua thẻ HTML).
-          
+          // Trả về code Lua thuần để Delta có thể loadstring
           document.body.innerHTML = ''; 
-          document.body.className = '';
-          // Chỉ in text thuần, Delta sẽ đọc được text này
           document.body.textContent = data.code;
-
-          // (Tùy chọn) Chặn chuột phải và F12 nếu họ cố tình mở bằng Chrome/Safari
-          document.addEventListener('contextmenu', e => e.preventDefault());
-          document.addEventListener('keydown', e => {
-            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'U')) {
-              e.preventDefault();
-              document.body.className = 'raw-mode';
-              document.body.innerHTML = '<h1 class="troll-title" style="font-size:2rem;">PHÁT HIỆN HACKER!<br>ĐÃ BỊ BẮT QUẢ TANG 😂</h1>';
-            }
-          });
 
         } catch (e) {
           document.body.innerHTML = '<h1 style="padding:20px;font-family:sans-serif;color:red;">404 - Không tìm thấy code!</h1>';
