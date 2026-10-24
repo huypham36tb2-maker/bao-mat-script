@@ -86,8 +86,18 @@
     /* Footer */
     footer { padding: 24px; text-align: center; border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; margin-top: auto; }
 
-    /* RAW Mode */
-    body.raw-mode { background: #ffffff !important; color: #000000 !important; padding: 16px !important; font-family: monospace !important; white-space: pre-wrap !important; word-break: break-all !important; display: block !important; }
+    /* RAW Mode (Troll Screen) */
+    body.raw-mode { 
+      background: #050505 !important; color: #ff003c !important; padding: 0 !important; font-family: 'Courier New', monospace !important; 
+      display: flex !important; justify-content: center !important; align-items: center !important; height: 100vh !important; 
+      flex-direction: column !important; user-select: none !important; overflow: hidden !important;
+    }
+    .troll-title {
+      font-size: 3rem; text-align: center; text-shadow: 0 0 10px #ff003c, 0 0 20px #ff003c, 0 0 40px #ff003c;
+      animation: flicker 1.5s infinite alternate; margin-bottom: 20px;
+    }
+    .troll-text { color: #888; font-size: 1.2rem; }
+    @keyframes flicker { 0% { opacity: 0.8; } 100% { opacity: 1; text-shadow: 0 0 20px #ff003c, 0 0 50px #ff003c; } }
   </style>
 </head>
 <body>
@@ -96,15 +106,14 @@
     <div class="logo">Lua Source Share</div>
   </header>
 
-  <!-- Khôi phục Banner -->
   <div class="banner-container">
     <div class="banner"></div>
   </div>
 
   <div class="nav-tabs" id="nav-tabs">
-    <div class="nav-item active" onclick="switchTab('upload')">Đăng tải</div>
-    <div class="nav-item" onclick="switchTab('explore')">Khám phá</div>
-    <div class="nav-item" onclick="switchTab('my')">Của tôi</div>
+    <div class="nav-item active" onclick="switchTab(event, 'upload')">Đăng tải</div>
+    <div class="nav-item" onclick="switchTab(event, 'explore')">Khám phá</div>
+    <div class="nav-item" onclick="switchTab(event, 'my')">Của tôi</div>
   </div>
 
   <main id="view-upload">
@@ -125,7 +134,7 @@
 
     <div class="options">
       <label class="checkbox-group">
-        <input type="checkbox" id="protect-code"> Mã hóa bảo vệ code (Chỉ dành cho file .lua)
+        <input type="checkbox" id="protect-code" checked> Mã hóa bảo vệ code (Chỉ dành cho file .lua)
       </label>
       <button class="btn btn-primary" id="submitBtn">Tạo Link</button>
     </div>
@@ -143,7 +152,6 @@
     &copy; 2024 Lua Share. Dữ liệu được lưu trữ qua API Pastes.dev.
   </footer>
 
-  <!-- Modal Link -->
   <div id="modal">
     <div class="modal-content">
       <h3>Tạo link thành công</h3>
@@ -185,10 +193,9 @@
     function getLocal(key) { return JSON.parse(localStorage.getItem(key) || '[]'); }
     function setLocal(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
 
-    // Chuyển Tab
-    function switchTab(tab) {
+    function switchTab(event, tab) {
       document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-      event.target.classList.add('active');
+      if(event) event.target.classList.add('active');
       
       document.getElementById('view-upload').style.display = tab === 'upload' ? 'flex' : 'none';
       document.getElementById('view-explore').style.display = tab === 'explore' ? 'block' : 'none';
@@ -198,7 +205,6 @@
       if (tab === 'my') renderMy();
     }
 
-    // Đóng/Mở Modal
     function closeModal() { document.getElementById('modal').style.display = 'none'; }
     function copyLink() { 
       navigator.clipboard.writeText(document.getElementById('raw-link').value);
@@ -220,18 +226,19 @@
       btn.textContent = 'Đang xử lý...'; btn.disabled = true;
 
       try {
-        // Xử lý mã hóa (Obfuscate cơ bản)
         let finalCode = code;
+        
+        // Xử lý mã hóa Obfuscate cơ bản (nếu được chọn)
         if (isProtect && filename.endsWith('.lua')) {
-          // Mã hóa Base64 và bọc trong hàm loadstring giải mã ngược
           const b64 = btoa(unescape(encodeURIComponent(code)));
+          // Code Lua tự giải mã và chạy (dùng cho loadstring)
           finalCode = `-- Protected Code\nlocal _c = "${b64}";\nlocal _d = _c:gsub(".", function(x) return string.char(x:byte() - 2) end);\nloadstring(_d)()`;
         }
 
         const expireAt = expire > 0 ? Date.now() + (expire * 3600000) : null;
         const payload = encodeData({ filename, code: finalCode, password: pw || null, expireAt });
 
-        // Gửi API
+        // Gửi API lên Pastes.dev
         const res = await fetch('https://api.pastes.dev/post', {
           method: 'POST',
           headers: { 'Content-Type': 'text/plain' },
@@ -240,7 +247,7 @@
 
         if (!res.ok) throw new Error();
         const data = await res.json();
-        const rawUrl = `${window.location.origin}/?raw=${data.key}`;
+        const rawUrl = `${window.location.origin}${window.location.pathname}?raw=${data.key}`;
 
         // Lưu lịch sử
         const now = Date.now();
@@ -279,7 +286,7 @@
             <p>${new Date(item.time).toLocaleString('vi-VN')}</p>
           </div>
           <div class="item-actions">
-            <a href="/?raw=${item.id}" target="_blank" class="btn-sm btn-primary" style="background:var(--primary)">Xem Raw</a>
+            <a href="?raw=${item.id}" target="_blank" class="btn-sm btn-primary" style="background:var(--primary)">Xem Raw</a>
           </div>
         </div>
       `).join('');
@@ -312,7 +319,7 @@
       toast('Đã xóa khỏi lịch sử.');
     }
 
-    // ===== XỬ LÝ RAW LINK =====
+    // ===== XỬ LÝ RAW LINK (ĐÃ FIX LỖI DELTA) =====
     window.addEventListener('DOMContentLoaded', async () => {
       const urlParams = new URLSearchParams(window.location.search);
       const rawId = urlParams.get('raw');
@@ -325,11 +332,13 @@
           const text = await res.text();
           const data = decodeData(text);
           
+          // 1. Kiểm tra hết hạn
           if (data.expireAt && Date.now() > data.expireAt) {
             document.body.innerHTML = '<h1 style="padding:20px;font-family:sans-serif;color:red;">404 - Link đã hết hạn!</h1>';
             return;
           }
 
+          // 2. Kiểm tra mật khẩu
           if (data.password) {
             const input = prompt('Script này cần mật khẩu để xem:');
             if (input !== data.password) {
@@ -338,10 +347,25 @@
             }
           }
 
-          // Hiển thị code thô
+          // 3. TRẢ VỀ CODE LUA THUẦN (FIX LỖI DELTA)
+          // Xóa bỏ logic check isBrowser, luôn trả về code thô để loadstring hoạt động.
+          // Để chống người dùng mở link bằng trình duyệt, ta có thể dùng Javascript để xóa body,
+          // nhưng nếu họ dùng Delta, Delta sẽ lấy textContent (chỉ lấy text, bỏ qua thẻ HTML).
+          
           document.body.innerHTML = ''; 
-          document.body.className = 'raw-mode';
+          document.body.className = '';
+          // Chỉ in text thuần, Delta sẽ đọc được text này
           document.body.textContent = data.code;
+
+          // (Tùy chọn) Chặn chuột phải và F12 nếu họ cố tình mở bằng Chrome/Safari
+          document.addEventListener('contextmenu', e => e.preventDefault());
+          document.addEventListener('keydown', e => {
+            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'U')) {
+              e.preventDefault();
+              document.body.className = 'raw-mode';
+              document.body.innerHTML = '<h1 class="troll-title" style="font-size:2rem;">PHÁT HIỆN HACKER!<br>ĐÃ BỊ BẮT QUẢ TANG 😂</h1>';
+            }
+          });
 
         } catch (e) {
           document.body.innerHTML = '<h1 style="padding:20px;font-family:sans-serif;color:red;">404 - Không tìm thấy code!</h1>';
