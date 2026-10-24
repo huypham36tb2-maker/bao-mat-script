@@ -29,22 +29,16 @@
     .banner-container { padding: 16px 24px 0; max-width: 1000px; margin: 0 auto; width: 100%; }
     .banner { width: 100%; height: 140px; border-radius: 8px; background: url('https://www.image2url.com/r2/default/gifs/1792619935669-6803e9fd-f753-4013-8516-5e35b55ddcc0.gif') center/cover; border: 1px solid var(--border); }
 
-    /* Tabs */
-    .nav-tabs { display: flex; gap: 24px; padding: 0 24px; border-bottom: 1px solid var(--border); background: var(--bg); max-width: 1000px; margin: 16px auto 0; width: 100%; }
-    .nav-item { padding: 12px 0; color: var(--muted); font-size: 14px; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; }
-    .nav-item:hover { color: var(--text); }
-    .nav-item.active { color: var(--text); border-bottom-color: var(--primary); }
-
     /* Main Content */
     main { flex: 1; padding: 24px; display: flex; flex-direction: column; max-width: 1000px; margin: 0 auto; width: 100%; }
     
     /* Form */
     .input-row { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
-    input[type="text"], select {
+    input[type="text"] {
       background: var(--panel); border: 1px solid var(--border); color: var(--text);
       padding: 10px 14px; border-radius: 6px; font-size: 14px; outline: none; transition: border 0.2s;
     }
-    input:focus, select:focus { border-color: var(--primary); }
+    input:focus { border-color: var(--primary); }
     .input-file { flex: 1; min-width: 200px; }
 
     /* Editor */
@@ -68,7 +62,7 @@
     
     footer { padding: 24px; text-align: center; border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; margin-top: auto; }
 
-    /* Giao diện Xem Code (Trình duyệt mở link) */
+    /* Giao diện Xem Code */
     #view-source { display: none; padding: 24px; max-width: 1000px; margin: 0 auto; width: 100%; }
     .source-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
     .source-title { font-size: 18px; font-weight: bold; color: var(--primary); }
@@ -78,7 +72,7 @@
 </head>
 <body>
 
-  <!-- GIAO DIỆN CHÍNH (TẠO LINK) -->
+  <!-- GIAO DIỆN TẠO LINK -->
   <div id="main-app">
     <header>
       <div class="logo">Lua Source Paste</div>
@@ -86,10 +80,6 @@
 
     <div class="banner-container">
       <div class="banner"></div>
-    </div>
-
-    <div class="nav-tabs" id="nav-tabs">
-      <div class="nav-item active" onclick="switchTab(event, 'upload')">Đăng tải</div>
     </div>
 
     <main id="view-upload">
@@ -112,7 +102,7 @@
     </footer>
   </div>
 
-  <!-- GIAO DIỆN XEM SOURCE (KHI MỞ LINK) -->
+  <!-- GIAO DIỆN XEM SOURCE -->
   <div id="view-source">
     <div class="source-header">
       <div class="source-title" id="view-filename">script.lua</div>
@@ -120,6 +110,9 @@
     </div>
     <div class="editor-wrapper" style="height: 70vh;">
       <textarea id="source-code"></textarea>
+    </div>
+    <div style="text-align: center; margin-top: 20px;">
+        <a href="/" class="btn btn-primary" style="text-decoration: none;">Tạo Link Mới</a>
     </div>
   </div>
 
@@ -137,12 +130,11 @@
   <div id="toast">Thông báo</div>
 
   <script>
-    // ===== KHỞI TẠO EDITOR =====
+    // Khởi tạo Editor
     const editor = CodeMirror.fromTextArea(document.getElementById('code'), {
       mode: "lua", theme: "dracula", lineNumbers: true, autoCloseBrackets: true, lineWrapping: true, indentUnit: 4
     });
 
-    // Editor cho phần xem source
     let sourceEditor;
     
     function toast(msg) {
@@ -157,7 +149,7 @@
       toast('Đã copy link!');
     }
 
-    // ===== TẠO LINK (GỬI LÊN GITHUB GIST) =====
+    // ===== TẠO LINK (DÙNG DPASTE) =====
     document.getElementById('submitBtn').addEventListener('click', async () => {
       const code = editor.getValue();
       let filename = document.getElementById('filename').value.trim() || 'script.lua';
@@ -169,24 +161,25 @@
       btn.textContent = 'Đang xử lý...'; btn.disabled = true;
 
       try {
-        // Gửi lên GitHub Gist (Ẩn danh)
-        const res = await fetch('https://api.github.com/gists', {
+        // Đóng gói dữ liệu (JSON -> Base64)
+        const payload = btoa(unescape(encodeURIComponent(JSON.stringify({ filename, code }))));
+
+        // Gửi lên Dpaste
+        const res = await fetch('https://dpaste.com/api/v2/', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            description: "Lua Script Paste",
-            public: false,
-            files: {
-              [filename]: { content: code }
-            }
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+            'content': payload,
+            'syntax': 'text',
+            'expiry_days': '365'
           })
         });
 
         if (!res.ok) throw new Error('Lỗi API');
-        const data = await res.json();
+        const textData = await res.text();
         
-        // Tạo link dẫn tới chính web của bạn
-        const rawUrl = `${window.location.origin}${window.location.pathname}?raw=${data.id}`;
+        const pasteId = textData.trim().split('/').pop();
+        const rawUrl = `${window.location.origin}${window.location.pathname}?raw=${pasteId}`;
 
         document.getElementById('raw-link').value = rawUrl;
         document.getElementById('modal').style.display = 'flex';
@@ -199,7 +192,7 @@
       }
     });
 
-    // ===== XỬ LÝ XEM LINK RAW =====
+    // ===== HIỂN THỊ CODE KHI MỞ LINK =====
     window.addEventListener('DOMContentLoaded', async () => {
       const urlParams = new URLSearchParams(window.location.search);
       const rawId = urlParams.get('raw');
@@ -210,25 +203,19 @@
         document.getElementById('view-source').style.display = 'block';
 
         try {
-          const res = await fetch(`https://api.github.com/gists/${rawId}`);
+          const res = await fetch(`https://dpaste.com/${rawId}.txt`);
           if (!res.ok) throw new Error('Not Found');
           
-          const data = await res.json();
-          const fileKey = Object.keys(data.files)[0]; // Lấy tên file
-          const codeContent = data.files[fileKey].content;
+          const text = await res.text();
+          const data = JSON.parse(decodeURIComponent(escape(atob(text))));
 
-          // Hiển thị tên file
-          document.getElementById('view-filename').textContent = fileKey;
+          document.getElementById('view-filename').textContent = data.filename;
 
-          // Khởi tạo CodeMirror cho phần xem
           sourceEditor = CodeMirror.fromTextArea(document.getElementById('source-code'), {
             mode: "lua", theme: "dracula", lineNumbers: true, readOnly: true, lineWrapping: true
           });
           
-          // Đổ code vào
-          sourceEditor.setValue(codeContent);
-          
-          // (Tùy chọn) Cập nhật lại kích thước cho editor
+          sourceEditor.setValue(data.code);
           setTimeout(() => sourceEditor.refresh(), 100);
 
         } catch (e) {
@@ -238,7 +225,6 @@
       }
     });
 
-    // Hàm Copy Code cho phần xem
     function copySource() {
       if(sourceEditor) {
         const code = sourceEditor.getValue();
