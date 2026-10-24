@@ -3,17 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lua Source Share</title>
+  <title>Lua Source Paste</title>
   
   <!-- CodeMirror -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/lua/lua.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/python/python.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/xml/xml.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/css/css.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/edit/closebrackets.min.js"></script>
 
   <style>
@@ -25,48 +21,44 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
     
+    /* Header */
     header { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; border-bottom: 1px solid var(--border); background: var(--bg); }
     .logo { font-weight: 700; font-size: 18px; letter-spacing: -0.5px; }
     
+    /* Banner */
     .banner-container { padding: 16px 24px 0; max-width: 1000px; margin: 0 auto; width: 100%; }
     .banner { width: 100%; height: 140px; border-radius: 8px; background: url('https://www.image2url.com/r2/default/gifs/1792619935669-6803e9fd-f753-4013-8516-5e35b55ddcc0.gif') center/cover; border: 1px solid var(--border); }
 
+    /* Tabs */
     .nav-tabs { display: flex; gap: 24px; padding: 0 24px; border-bottom: 1px solid var(--border); background: var(--bg); max-width: 1000px; margin: 16px auto 0; width: 100%; }
     .nav-item { padding: 12px 0; color: var(--muted); font-size: 14px; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; }
     .nav-item:hover { color: var(--text); }
     .nav-item.active { color: var(--text); border-bottom-color: var(--primary); }
 
+    /* Main Content */
     main { flex: 1; padding: 24px; display: flex; flex-direction: column; max-width: 1000px; margin: 0 auto; width: 100%; }
     
+    /* Form */
     .input-row { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
-    input[type="text"], input[type="password"], select {
+    input[type="text"], select {
       background: var(--panel); border: 1px solid var(--border); color: var(--text);
       padding: 10px 14px; border-radius: 6px; font-size: 14px; outline: none; transition: border 0.2s;
     }
     input:focus, select:focus { border-color: var(--primary); }
     .input-file { flex: 1; min-width: 200px; }
-    .input-pw { width: 160px; }
-    .input-exp { width: 130px; }
 
+    /* Editor */
     .editor-wrapper { flex: 1; min-height: 350px; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin-bottom: 16px; display: flex; flex-direction: column; }
     .CodeMirror { height: 100% !important; font-family: 'Fira Code', 'Courier New', monospace !important; font-size: 14px !important; }
 
+    /* Options & Buttons */
     .options { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-    .checkbox-group { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); cursor: pointer; }
     
     .btn { padding: 10px 20px; border-radius: 6px; border: none; font-weight: 500; font-size: 14px; cursor: pointer; color: white; transition: background 0.2s; }
     .btn-primary { background: var(--primary); }
     .btn-primary:hover { background: var(--primary-hover); }
-    .btn-danger { background: var(--danger); }
-    .btn-danger:hover { opacity: 0.8; }
-
-    .list-container { display: flex; flex-direction: column; gap: 12px; }
-    .list-item { background: var(--panel); border: 1px solid var(--border); border-radius: 6px; padding: 16px; display: flex; justify-content: space-between; align-items: center; }
-    .item-info h4 { font-size: 15px; margin-bottom: 4px; color: var(--text); }
-    .item-info p { font-size: 13px; color: var(--muted); }
-    .item-actions { display: flex; gap: 8px; }
-    .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 4px; border: none; cursor: pointer; color: white; text-decoration: none; display: inline-block; }
     
+    /* Modal & Toast */
     #modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 50; align-items: center; justify-content: center; }
     .modal-content { background: var(--panel); border: 1px solid var(--border); padding: 24px; border-radius: 8px; width: 100%; max-width: 450px; }
     .modal-content h3 { margin-bottom: 16px; font-size: 18px; }
@@ -75,60 +67,63 @@
     #toast.show { opacity: 1; }
     
     footer { padding: 24px; text-align: center; border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; margin-top: auto; }
+
+    /* Giao diện Xem Code (Trình duyệt mở link) */
+    #view-source { display: none; padding: 24px; max-width: 1000px; margin: 0 auto; width: 100%; }
+    .source-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .source-title { font-size: 18px; font-weight: bold; color: var(--primary); }
+    .btn-copy { background: #22c55e; color: white; padding: 8px 16px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; }
+    .btn-copy:hover { background: #16a34a; }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="logo">Lua Source Share</div>
-  </header>
+  <!-- GIAO DIỆN CHÍNH (TẠO LINK) -->
+  <div id="main-app">
+    <header>
+      <div class="logo">Lua Source Paste</div>
+    </header>
 
-  <div class="banner-container">
-    <div class="banner"></div>
+    <div class="banner-container">
+      <div class="banner"></div>
+    </div>
+
+    <div class="nav-tabs" id="nav-tabs">
+      <div class="nav-item active" onclick="switchTab(event, 'upload')">Đăng tải</div>
+    </div>
+
+    <main id="view-upload">
+      <div class="input-row">
+        <input type="text" id="filename" class="input-file" value="script.lua" placeholder="Tên file (VD: script.lua)">
+      </div>
+
+      <div class="editor-wrapper">
+        <textarea id="code"></textarea>
+      </div>
+
+      <div class="options">
+        <div></div>
+        <button class="btn btn-primary" id="submitBtn">Tạo Link</button>
+      </div>
+    </main>
+
+    <footer>
+      &copy; 2024 Lua Paste. Dữ liệu lưu trữ bảo mật.
+    </footer>
   </div>
 
-  <div class="nav-tabs" id="nav-tabs">
-    <div class="nav-item active" onclick="switchTab(event, 'upload')">Đăng tải</div>
-    <div class="nav-item" onclick="switchTab(event, 'explore')">Khám phá</div>
-    <div class="nav-item" onclick="switchTab(event, 'my')">Của tôi</div>
+  <!-- GIAO DIỆN XEM SOURCE (KHI MỞ LINK) -->
+  <div id="view-source">
+    <div class="source-header">
+      <div class="source-title" id="view-filename">script.lua</div>
+      <button class="btn-copy" onclick="copySource()">Copy Code</button>
+    </div>
+    <div class="editor-wrapper" style="height: 70vh;">
+      <textarea id="source-code"></textarea>
+    </div>
   </div>
 
-  <main id="view-upload">
-    <div class="input-row">
-      <input type="text" id="filename" class="input-file" value="baomat.lua" placeholder="Tên file (VD: script.lua)">
-      <input type="password" id="password" class="input-pw" placeholder="Mật khẩu (nếu có)">
-      <select id="expire" class="input-exp">
-        <option value="0">Vĩnh viễn</option>
-        <option value="1">1 Giờ</option>
-        <option value="24">1 Ngày</option>
-        <option value="168">7 Ngày</option>
-      </select>
-    </div>
-
-    <div class="editor-wrapper">
-      <textarea id="code"></textarea>
-    </div>
-
-    <div class="options">
-      <label class="checkbox-group">
-        <input type="checkbox" id="protect-code" checked> Mã hóa bảo vệ code (Chỉ dành cho file .lua)
-      </label>
-      <button class="btn btn-primary" id="submitBtn">Tạo Link</button>
-    </div>
-  </main>
-
-  <main id="view-explore" style="display: none;">
-    <div class="list-container" id="explore-list"></div>
-  </main>
-
-  <main id="view-my" style="display: none;">
-    <div class="list-container" id="my-list"></div>
-  </main>
-
-  <footer>
-    &copy; 2024 Lua Share. Dữ liệu được lưu trữ qua API Dpaste.
-  </footer>
-
+  <!-- Modal & Toast -->
   <div id="modal">
     <div class="modal-content">
       <h3>Tạo link thành công</h3>
@@ -139,45 +134,21 @@
       </div>
     </div>
   </div>
-
   <div id="toast">Thông báo</div>
 
   <script>
+    // ===== KHỞI TẠO EDITOR =====
     const editor = CodeMirror.fromTextArea(document.getElementById('code'), {
       mode: "lua", theme: "dracula", lineNumbers: true, autoCloseBrackets: true, lineWrapping: true, indentUnit: 4
     });
 
-    document.getElementById('filename').addEventListener('input', (e) => {
-      const name = e.target.value.toLowerCase();
-      let mode = "lua";
-      if (name.endsWith('.js')) mode = "javascript";
-      else if (name.endsWith('.py')) mode = "python";
-      else if (name.endsWith('.html') || name.endsWith('.xml')) mode = "xml";
-      else if (name.endsWith('.css')) mode = "css";
-      editor.setOption("mode", mode);
-    });
-
+    // Editor cho phần xem source
+    let sourceEditor;
+    
     function toast(msg) {
       const t = document.getElementById('toast');
       t.textContent = msg; t.classList.add('show');
       setTimeout(() => t.classList.remove('show'), 2500);
-    }
-
-    function encodeData(data) { return btoa(unescape(encodeURIComponent(JSON.stringify(data)))); }
-    function decodeData(str) { return JSON.parse(decodeURIComponent(escape(atob(str)))); }
-    function getLocal(key) { return JSON.parse(localStorage.getItem(key) || '[]'); }
-    function setLocal(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
-
-    function switchTab(event, tab) {
-      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-      if(event) event.target.classList.add('active');
-      
-      document.getElementById('view-upload').style.display = tab === 'upload' ? 'flex' : 'none';
-      document.getElementById('view-explore').style.display = tab === 'explore' ? 'block' : 'none';
-      document.getElementById('view-my').style.display = tab === 'my' ? 'block' : 'none';
-
-      if (tab === 'explore') renderExplore();
-      if (tab === 'my') renderMy();
     }
 
     function closeModal() { document.getElementById('modal').style.display = 'none'; }
@@ -186,13 +157,11 @@
       toast('Đã copy link!');
     }
 
-    // ===== LOGIC TẠO LINK SỬ DỤNG DPASTE API =====
+    // ===== TẠO LINK (GỬI LÊN GITHUB GIST) =====
     document.getElementById('submitBtn').addEventListener('click', async () => {
       const code = editor.getValue();
-      let filename = document.getElementById('filename').value.trim() || 'baomat.lua';
+      let filename = document.getElementById('filename').value.trim() || 'script.lua';
       if (!filename.includes('.')) filename += '.lua';
-      const pw = document.getElementById('password').value;
-      const isProtect = document.getElementById('protect-code').checked;
 
       if (!code.trim()) return toast('Vui lòng nhập code!');
 
@@ -200,43 +169,28 @@
       btn.textContent = 'Đang xử lý...'; btn.disabled = true;
 
       try {
-        let finalCode = code;
-        
-        if (isProtect && filename.endsWith('.lua')) {
-          const b64 = btoa(unescape(encodeURIComponent(code)));
-          finalCode = `-- Protected Code\nlocal _c = "${b64}";\nlocal _d = _c:gsub(".", function(x) return string.char(x:byte() - 2) end);\nloadstring(_d)()`;
-        }
-
-        const payload = encodeData({ filename, code: finalCode, password: pw || null });
-
-        // Gửi API lên Dpaste (hỗ trợ CORS tốt hơn Pastes.dev)
-        const res = await fetch('https://dpaste.com/api/v2/', {
+        // Gửi lên GitHub Gist (Ẩn danh)
+        const res = await fetch('https://api.github.com/gists', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: new URLSearchParams({
-            'content': payload,
-            'syntax': 'text',
-            'expiry_days': '365'
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            description: "Lua Script Paste",
+            public: false,
+            files: {
+              [filename]: { content: code }
+            }
           })
         });
 
         if (!res.ok) throw new Error('Lỗi API');
-        const textData = await res.text();
+        const data = await res.json();
         
-        // Lấy ID từ URL trả về (VD: https://dpaste.com/ABC123 -> Lấy ABC123)
-        const pasteId = textData.trim().split('/').pop();
-        const rawUrl = `${window.location.origin}${window.location.pathname}?raw=${pasteId}`;
-
-        const now = Date.now();
-        let my = getLocal('my_scripts');
-        my.unshift({ id: pasteId, filename, time: now, url: rawUrl });
-        setLocal('my_scripts', my);
+        // Tạo link dẫn tới chính web của bạn
+        const rawUrl = `${window.location.origin}${window.location.pathname}?raw=${data.id}`;
 
         document.getElementById('raw-link').value = rawUrl;
         document.getElementById('modal').style.display = 'flex';
-        
         editor.setValue('');
-        document.getElementById('password').value = '';
       } catch (err) {
         toast('Lỗi khi kết nối tới Server!');
         console.error(err);
@@ -245,80 +199,53 @@
       }
     });
 
-    function renderExplore() {
-      const list = getLocal('explore_scripts');
-      const el = document.getElementById('explore-list');
-      if (!list.length) return el.innerHTML = '<p style="color:var(--muted)">Chưa có dữ liệu.</p>';
-      el.innerHTML = list.map(item => `
-        <div class="list-item">
-          <div class="item-info">
-            <h4>${item.filename}</h4>
-            <p>${new Date(item.time).toLocaleString('vi-VN')}</p>
-          </div>
-          <div class="item-actions">
-            <a href="?raw=${item.id}" target="_blank" class="btn-sm btn-primary" style="background:var(--primary)">Xem Raw</a>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function renderMy() {
-      const list = getLocal('my_scripts');
-      const el = document.getElementById('my-list');
-      if (!list.length) return el.innerHTML = '<p style="color:var(--muted)">Bạn chưa tạo script nào.</p>';
-      el.innerHTML = list.map((item, idx) => `
-        <div class="list-item">
-          <div class="item-info">
-            <h4>${item.filename}</h4>
-            <p>${new Date(item.time).toLocaleString('vi-VN')}</p>
-          </div>
-          <div class="item-actions">
-            <button onclick="navigator.clipboard.writeText('${item.url}'); toast('Đã copy!')" class="btn-sm btn-primary" style="background:var(--primary)">Copy Link</button>
-            <button onclick="deleteMy(${idx})" class="btn-sm btn-danger" style="background:var(--danger)">Xóa</button>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function deleteMy(index) {
-      let list = getLocal('my_scripts');
-      list.splice(index, 1);
-      setLocal('my_scripts', list);
-      renderMy();
-      toast('Đã xóa khỏi lịch sử.');
-    }
-
-    // ===== XỬ LÝ RAW LINK =====
+    // ===== XỬ LÝ XEM LINK RAW =====
     window.addEventListener('DOMContentLoaded', async () => {
       const urlParams = new URLSearchParams(window.location.search);
       const rawId = urlParams.get('raw');
       
       if (rawId) {
+        // Ẩn trang chủ, hiện trang xem code
+        document.getElementById('main-app').style.display = 'none';
+        document.getElementById('view-source').style.display = 'block';
+
         try {
-          // Lấy code từ Dpaste
-          const res = await fetch(`https://dpaste.com/${rawId}.txt`);
+          const res = await fetch(`https://api.github.com/gists/${rawId}`);
           if (!res.ok) throw new Error('Not Found');
           
-          const text = await res.text();
-          const data = decodeData(text);
-          
-          if (data.password) {
-            const input = prompt('Script này cần mật khẩu để xem:');
-            if (input !== data.password) {
-              document.body.innerHTML = '<h1 style="padding:20px;font-family:sans-serif;color:red;">403 - Sai mật khẩu!</h1>';
-              return;
-            }
-          }
+          const data = await res.json();
+          const fileKey = Object.keys(data.files)[0]; // Lấy tên file
+          const codeContent = data.files[fileKey].content;
 
-          // Trả về code Lua thuần để Delta có thể loadstring
-          document.body.innerHTML = ''; 
-          document.body.textContent = data.code;
+          // Hiển thị tên file
+          document.getElementById('view-filename').textContent = fileKey;
+
+          // Khởi tạo CodeMirror cho phần xem
+          sourceEditor = CodeMirror.fromTextArea(document.getElementById('source-code'), {
+            mode: "lua", theme: "dracula", lineNumbers: true, readOnly: true, lineWrapping: true
+          });
+          
+          // Đổ code vào
+          sourceEditor.setValue(codeContent);
+          
+          // (Tùy chọn) Cập nhật lại kích thước cho editor
+          setTimeout(() => sourceEditor.refresh(), 100);
 
         } catch (e) {
-          document.body.innerHTML = '<h1 style="padding:20px;font-family:sans-serif;color:red;">404 - Không tìm thấy code!</h1>';
+          document.getElementById('view-filename').textContent = "Lỗi";
+          document.getElementById('view-source').innerHTML = '<h1 style="color:red; padding:20px;">404 - Không tìm thấy code!</h1>';
         }
       }
     });
+
+    // Hàm Copy Code cho phần xem
+    function copySource() {
+      if(sourceEditor) {
+        const code = sourceEditor.getValue();
+        navigator.clipboard.writeText(code);
+        toast('Đã copy toàn bộ code!');
+      }
+    }
   </script>
 </body>
 </html>
